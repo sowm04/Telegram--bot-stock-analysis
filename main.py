@@ -26,12 +26,23 @@ async def stock(update: Update, context: CallbackContext) -> None:
         stock_data = yf.Ticker(ticker)
         info = stock_data.info
 
+        print(info)
+
+        # Function to format numbers in crore with commas
+        def format_in_crore(number):
+            return "{:,.2f} Cr".format(number / 1e7)
+
         # Customize the information you want to display
         response = f"Stock Analysis for {ticker}:\n"
         response += f"Company: {info.get('longName', 'N/A')}\n"
         response += f"Current Price: {info.get('currentPrice', 'N/A')}\n"
         response += f"Previous Close: {info.get('regularMarketPreviousClose', 'N/A')}\n"
         response += f"Open: {info.get('regularMarketOpen', 'N/A')}\n"
+        response += f"Market Cap: {format_in_crore(info.get('marketCap', 0))}\n"
+        response += f"P/E Ratio (TTM): {info.get('trailingPE', 'N/A')}\n"
+        response += f"Return on Equity (ROE): {info.get('returnOnEquity', 'N/A')}\n"
+        response += f"Dividend Yield: {info.get('dividendYield', 'N/A')}\n"
+        response += f"Book Value: {info.get('bookValue', 'N/A')}\n"
 
         # Send the response back to the user
         await update.message.reply_text(response)
